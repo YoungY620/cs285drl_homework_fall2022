@@ -7,7 +7,7 @@ You can run this code on your own machine or on Google Colab.
 - Also run `pip install gym[box2d]`
 2. **Colab:** The first few sections of the notebook will install all required dependencies. You can try out the Colab option by clicking the badge below:
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/berkeleydeeprlcourse/homework_fall2022/blob/master/hw2/cs285/scripts/run_hw2.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/YoungY620/cs285drl_homework_fall2022/blob/master/hw2/cs285/scripts/run_hw2.ipynb)
 
 ## Complete the code
 
