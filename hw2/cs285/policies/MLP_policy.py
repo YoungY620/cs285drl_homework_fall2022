@@ -139,8 +139,16 @@ class MLPPolicyPG(MLPPolicy):
             # sum_{t=0}^{T-1} [grad [log pi(a_t|s_t) * (Q_t - b_t)]]
         # HINT2: you will want to use the `log_prob` method on the distribution returned
             # by the `forward` method
+        self.optimizer.zero_grad()
 
-        TODO
+        observations = ptu.from_numpy(observations) if isinstance(observations, np.ndarray) else observations
+        actions = ptu.from_numpy(actions) if isinstance(actions, np.ndarray) else actions
+        advantages = ptu.from_numpy(advantages) if isinstance(advantages, np.ndarray) else advantages
+        action_distribution = self.forward(observations)
+        log_probs = action_distribution.log_prob(actions)
+        loss = -torch.mul(log_probs, advantages).mean()
+        loss.backward()
+        self.optimizer.step()
 
         if self.nn_baseline:
             ## TODO: update the neural network baseline using the q_values as
@@ -149,8 +157,16 @@ class MLPPolicyPG(MLPPolicy):
 
             ## Note: You will need to convert the targets into a tensor using
                 ## ptu.from_numpy before using it in the loss
-
-            TODO
+            assert q_values is not None
+            self.baseline_optimizer.zero_grad()
+            q_values = ptu.from_numpy(q_values) if isinstance(q_values, np.ndarray) else q_values
+            q_mean, q_std = torch.mean(q_values), torch.std(q_values)
+            q_values = (q_values - q_mean).divide(q_std)
+            values = self.baseline(observations)
+            print(values.shape, q_values.shape)
+            b_loss = self.baseline_loss(values, q_values)
+            b_loss.backward()
+            self.baseline_optimizer.step()
 
         train_log = {
             'Training Loss': ptu.to_numpy(loss),
